@@ -60,8 +60,8 @@ public class RobotControlGrid {
 
 	}
 
-	class DrawGrid extends JPanel {
-
+	class DrawGrid extends JPanel {	
+		//paints stuff	
 		public void paintComponent(Graphics g) {
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
 

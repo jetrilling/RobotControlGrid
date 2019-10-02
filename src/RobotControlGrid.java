@@ -50,7 +50,7 @@ public class RobotControlGrid {
 
 		frame.getContentPane().add(BorderLayout.EAST, panel);
 
-		DrawGrid grid = new DrawGrid();
+		Grid grid = new Grid();
 		frame.getContentPane().add(grid);
 
 		grid.repaint();
@@ -60,18 +60,18 @@ public class RobotControlGrid {
 
 	}
 
-	class DrawGrid extends JPanel {	
+	class Grid extends JPanel {	
 	
 		public void paintComponent(Graphics g) {
 			g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-			int columns = 8;
+			int columns = 9;
 			int rows = 6;
 
 			int margin = 50;
 			
-			int rowSize = (this.getHeight() - 2 * margin) / rows;
-			int columnSize = (this.getWidth() - 2 * margin) / columns;
+			int rowSize = (this.getHeight() - 2 * margin) / (rows-1);
+			int columnSize = (this.getWidth() - 2 * margin) / (columns-1);
 			
 			int gridSize = rowSize;
 			
@@ -79,16 +79,14 @@ public class RobotControlGrid {
 				gridSize = columnSize;
 			}
 			
-			
-			
 			g.setColor(Color.CYAN);
 
-			for (int i = 0; i <= rows; i++) {
-				g.drawLine(margin, gridSize *i + margin, gridSize * columns + margin, gridSize *i + margin);
+			for (int i = 0; i < rows; i++) {
+				g.drawLine(margin, gridSize * i + margin, gridSize * (columns-1) + margin, gridSize * i + margin);
 			}
 
-			for (int j = 0; j <= columns; j++) {
-				g.drawLine(gridSize *j + margin, margin, gridSize *j + margin, gridSize * rows + margin);
+			for (int j = 0; j < columns; j++) {
+				g.drawLine(gridSize *j + margin, margin, gridSize * j + margin, gridSize * (rows-1) + margin);
 			}
 		}
 	}

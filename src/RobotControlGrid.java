@@ -1,11 +1,10 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.io.IOException;
 
 import javax.swing.*;
 
@@ -13,6 +12,9 @@ public class RobotControlGrid {
 
 	static RobotControlGrid rcg;
 	JFrame frame;
+	int rowDest;
+	int colDest;
+	Client client;
 
 	public static void main(String[] args) {
 		rcg = new RobotControlGrid();
@@ -29,7 +31,10 @@ public class RobotControlGrid {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
 		JButton connect = new JButton("Connect");
+		connect.addActionListener(new ConnectListener());
+
 		JButton drive = new JButton("Drive");
+		drive.addActionListener(new DriveListener());
 
 		JTextField robot = new JTextField(20);
 		robot.setMaximumSize(robot.getPreferredSize());
@@ -55,15 +60,20 @@ public class RobotControlGrid {
 		frame.getContentPane().add(BorderLayout.EAST, panel);
 
 		final Grid grid = new Grid();
+
 		frame.getContentPane().add(BorderLayout.CENTER, grid);
+
+		grid.setRobotPosition(3, 3);
 
 		grid.repaint();
 
 		grid.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				System.out.println(e.getX() + "," + e.getY());
-				column.setText(grid.getColumn(e.getX()).toString());
-				row.setText(grid.getRow(e.getY()).toString());
+				colDest = e.getX();
+				rowDest = e.getY();
+				column.setText(grid.getColumn(colDest) + "");
+				row.setText(grid.getRow(rowDest) + "");
 			}
 		});
 
@@ -72,61 +82,29 @@ public class RobotControlGrid {
 
 	}
 
-	class Grid extends JPanel {
-		
-		int gridSize;
-		
-		public void paintComponent(Graphics g) {
-			g.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-			int columns = 9;
-			int rows = 6;
-
-			int margin = 50;
-
-			int rowSize = (this.getHeight() - 2 * margin) / (rows - 1);
-			int columnSize = (this.getWidth() - 2 * margin) / (columns - 1);
-
-			gridSize = rowSize;
-
-			if (columnSize < rowSize) {
-				gridSize = columnSize;
-			}
-
-			g.setColor(Color.CYAN);
-
-			for (int i = 0; i < rows; i++) {
-				g.drawLine(margin, gridSize * i + margin, gridSize * (columns - 1) + margin, gridSize * i + margin);
-			}
-
-			for (int j = 0; j < columns; j++) {
-				g.drawLine(gridSize * j + margin, margin, gridSize * j + margin, gridSize * (rows - 1) + margin);
-			}
-		}
-
-		public Integer getColumn (int xPos) {
-			int col = (xPos - xPos%gridSize)/gridSize;
-			return new Integer(col);
-		}
-		
-		public Integer getRow (int yPos) {
-			int row = (yPos - yPos%gridSize)/gridSize;
-			return new Integer(row);
-		}
-	}
-	 
-	
 	class ConnectListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 
+			if (client == null) {
+					try {
+						client = new Client();
+					} catch (IOException e) {
+
+						e.printStackTrace();
+					}
+			}
 		}
 	}
 
 	class DriveListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+			try {
+				client.goToButtonPressed(rowDest, colDest);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 		}
-
 	}
-
 }

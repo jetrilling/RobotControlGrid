@@ -10,18 +10,50 @@ import javax.swing.*;
 
 public class RobotControlGrid {
 
-	static RobotControlGrid rcg;
 	JFrame frame;
 	int rowDest;
 	int colDest;
 	Client client;
+	Grid grid;
 
 	public static void main(String[] args) {
-		rcg = new RobotControlGrid();
+
+		RobotControlGrid rcg = new RobotControlGrid();
 		rcg.go();
 	}
 
 	void go() {
+		
+		if (client == null) {
+			try {
+				client = new Client();
+				System.out.println("Connected");
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+		}
+		
+		grid = new Grid();
+		
+		Thread rt = new Thread() {
+			public void run() {
+
+				while (true) {
+					try {
+						grid.setRobotPosition(client.getCol(), client.getRow());
+						System.out.println("Recieved Robot Position");
+						
+					} catch (IOException e) {
+
+						e.printStackTrace();
+					}
+					
+				}
+			}
+		};
+		rt.start();
+
 		frame = new JFrame("Robot Navigator");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -59,11 +91,7 @@ public class RobotControlGrid {
 
 		frame.getContentPane().add(BorderLayout.EAST, panel);
 
-		final Grid grid = new Grid();
-
 		frame.getContentPane().add(BorderLayout.CENTER, grid);
-
-		grid.setRobotPosition(3, 3);
 
 		grid.repaint();
 
@@ -85,23 +113,18 @@ public class RobotControlGrid {
 	class ConnectListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 
-			if (client == null) {
-					try {
-						client = new Client();
-					} catch (IOException e) {
 
-						e.printStackTrace();
-					}
-			}
 		}
 	}
 
 	class DriveListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			try {
-				client.goToButtonPressed(rowDest, colDest);
+				client.goToButtonPressed(grid.getColumn(colDest), grid.getRow(rowDest));
+
+				System.out.println(grid.getColumn(colDest) + "," + grid.getRow(rowDest));
+
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 

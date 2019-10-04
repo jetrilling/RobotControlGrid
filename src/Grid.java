@@ -10,7 +10,6 @@ class Grid extends JPanel {
 	int currentX;
 	int currentY;
 
-	
 	public void paintComponent(Graphics g) {
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
@@ -37,7 +36,7 @@ class Grid extends JPanel {
 		for (int j = 0; j < columns; j++) {
 			g.drawLine(gridSize * j + margin, margin, gridSize * j + margin, gridSize * (rows - 1) + margin);
 		}
-		
+		g.setColor(Color.RED);
 		g.fillOval(currentX * gridSize + margin - 5, currentY * gridSize + margin - 5, 10, 10);
 	}
 
@@ -51,9 +50,11 @@ class Grid extends JPanel {
 		return row;
 	}
 
-	public void setRobotPosition(int robotRow, int robotColumn) {
-		currentX = robotColumn;
-		currentY = robotRow;
+	public void setRobotPosition(int col, int row) {
+		currentX = col;
+		currentY = row;
+		System.out.println("Current:"+currentX+","+currentY);
+		this.repaint();
 
 	}
 

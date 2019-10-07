@@ -23,19 +23,9 @@ public class RobotControlGrid {
 	}
 
 	void go() {
-		
-		if (client == null) {
-			try {
-				client = new Client();
-				System.out.println("Connected");
-			} catch (IOException e) {
 
-				e.printStackTrace();
-			}
-		}
-		
 		grid = new Grid();
-		
+
 		Thread rt = new Thread() {
 			public void run() {
 
@@ -43,12 +33,12 @@ public class RobotControlGrid {
 					try {
 						grid.setRobotPosition(client.getCol(), client.getRow());
 						System.out.println("Recieved Robot Position");
-						
+
 					} catch (IOException e) {
 
 						e.printStackTrace();
 					}
-					
+
 				}
 			}
 		};
@@ -113,7 +103,15 @@ public class RobotControlGrid {
 	class ConnectListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 
+			if (client == null) {
+				try {
+					client = new Client();
+					System.out.println("Connected");
+				} catch (IOException e) {
 
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -127,7 +125,6 @@ public class RobotControlGrid {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-
 		}
 	}
 }
